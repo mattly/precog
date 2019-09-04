@@ -1,0 +1,9 @@
+{:source-paths ["src"]
+ :dependencies [[cljs-bean "1.4.0"]
+                [clj-commons/cljss "1.6.4"]]
+ :dev-http {8080 "target/"}
+ :builds {:app {:target :browser
+                :output-dir "target/js"
+                :asset-path "/js"
+                :modules {:main {:init-fn dv.main/main!}}
+                :devtools {:after-load dv.main/reload!}}}}

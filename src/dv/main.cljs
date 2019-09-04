@@ -17,7 +17,12 @@
           (apply preact/h component props children))))
 
 (defn app [props]
-  (ele [:div [:div "Hello"] [:div "World?"]]))
+  (ele [:div 
+        [:div "Hello"] 
+        [:div "World?"] 
+        (list 
+         [:div {:key "one"} "hello"]
+         [:div {:key "two"} "world"])]))
 
 (def app-ele (js/document.getElementById "app"))
 

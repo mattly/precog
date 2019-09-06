@@ -1,3 +1,6 @@
+.clj-kondo/*
+!.clj-kondo/config.edn
+.cpcache
 .shadow-cljs
 node_modules
 target/js

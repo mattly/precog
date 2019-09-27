@@ -1,7 +1,7 @@
 (ns dv.main
   (:require
    ["preact/hooks" :as hooks]
-   [dv.view :as view :refer-macros [defc]]))
+   [dv.view :as view :refer-macros [html]]))
 
 (defn use-lens [*a f]
   (let [[value update-value] (hooks/useState (f @*a))]
@@ -15,33 +15,39 @@
     value))
 
 
-(defc dtdd [{:keys [dt dd]}]
-  [:<> [:dt dt] [:dd dd]])
+(defn dtdd [props]
+  (html [:<> [:dt (.-dt props)] [:dd (.-dd props)]]))
 
-(defc app [{:keys [state]}]
-  (let [c (use-lens state #(get % :count 0))
-        input (use-lens state #(get % :input ""))]
-    (js/console.log input)
-    [:div
-     [:div "Hello"]
-     [:div "World!!"]
-     [:<> [:div "one"] [:div "two"]]
-     [:dl
-      [dtdd {:dt "term" :dd "definition"}]
-      [dtdd {:dt "term2" :dd "definiton2"}]]
+(defn app [props]
+  (let [state (.-state props)
+        c (use-lens state #(get % :count 0))
+        input (use-lens state #(get % :input ""))
+        hello "hello"]
+    (html
      [:div
+      [:div hello]
+      [:div "World!!"]
+      [:<> [:div "one"] [:div "two"]]
+      [:dl
+       [dtdd {:dt "term"
+              :dd "definition"}]
+       [dtdd {:dt "term2"
+              :dd "definiton2"}]]
       [:div
-       "clicked " c " times"]
-      [:div
-       [:button {:onClick (fn [_] (swap! state update :count inc))} "increment"]
-       [:button {:onClick (fn [_] (swap! state update :count dec))} "decrement"]]]
-     [:input {:type "text" :value input :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]
-     [:ul
-      (for [x (range 10)]
-        [:li x])]
-     [:<>
-      [:div {:key "one"} "hello"]
-      [:div {:key "two"} "world"]]]))
+       [:div
+        "clicked " c " times"]
+       [:div
+        [:button {:onClick (fn [_] (swap! state update :count inc))} "increment"]
+        [:button {:onClick (fn [_] (swap! state update :count dec))} "decrement"]]]
+      [:input {:type    "text"
+               :value   input
+               :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]
+      [:ul
+       (for [x (range 10)]
+         (html [:li x]))]
+      [:<>
+       [:div {:key "one"} "hello"]
+       [:div {:key "two"} "world"]]])))
 
 (def app-ele (js/document.getElementById "app"))
 
@@ -49,7 +55,7 @@
 
 (defn render []
   (js/console.log ::render)
-  (view/render [app {:state state}] app-ele)
+  (view/render (html [app {:state state}]) app-ele)
   (js/console.log ::render-done))
 
 (defn main! []

@@ -19,9 +19,11 @@
                  "type" component
                  "ref" (or (:ref props) js/undefined)
                  "key" (or (:key props) js/undefined)
-                 "props" (->js (merge (bean)
-                                      (dissoc props :key :ref)
-                                      {:children (to-array (map compile-template children))}))))
+                 "props" (-> props
+                             (dissoc :key :ref)
+                             (assoc :children (to-array (map compile-template children)))
+                             (merge (bean))
+                             (->js))))
        
        (coll? form)
        (apply array (doall (map compile-template form)))

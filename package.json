@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "preact": "^10.0.0-rc.1",
+    "preact": "^10.0.0",
     "shadow-cljs": "^2.8.52"
   }
 }

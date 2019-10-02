@@ -1,25 +1,15 @@
-(ns dv.main
+(ns demo.main
   (:require
    ["preact/hooks" :as hooks]
-   [dv.view :as view :refer-macros [html]]))
-
-(defn use-lens [*a f]
-  (let [[value update-value] (hooks/useState (f @*a))]
-    (hooks/useEffect
-     (fn [_]
-       (let [k (gensym "useLens")]
-         (add-watch *a k
-                    (fn update-lens-hook [_ _ _ new-state]
-                      (update-value (f new-state))))
-         (fn [] (remove-watch *a k)))))
-    value))
-
+   [precog.main :as precog :refer [html use-atom use-lens]]))
 
 (defn dtdd [props]
   (html [:<> [:dt (.-dt props)] [:dd (.-dd props)]]))
 
+;; hello?
 (defn app [props]
   (let [state (.-state props)
+        *input (use-atom "fee")
         c (use-lens state #(get % :count 0))
         input (use-lens state #(get % :input ""))
         hello "hello"]
@@ -37,11 +27,17 @@
        [:div
         "clicked " c " times"]
        [:div
-        [:button {:onClick (fn [_] (swap! state update :count inc))} "increment"]
-        [:button {:onClick (fn [_] (swap! state update :count dec))} "decrement"]]]
-      [:input {:type    "text"
-               :value   input
-               :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]
+        [:button {:on-click (fn [_] (swap! state update :count inc))} "increment"]
+        [:button {:on-click (fn [_] (swap! state update :count dec))} "decrement"]]]
+      [:div
+       [:label "lens input"
+        [:input {:type    "text"
+                 :value   input
+                 :on-input (fn [e] (swap! state assoc :input (.. e -target -value)))}]]]
+      [:label "atom input"
+       [:input {:type "text"
+                :value @*input
+                :onInput (fn [e] (reset! *input (.. e -target -value)))}]]
       [:ul
        (for [x (range 10)]
          (html [:li x]))]
@@ -55,7 +51,7 @@
 
 (defn render []
   (js/console.log ::render)
-  (view/render (html [app {:state state}]) app-ele)
+  (precog/render (html [app {:state state}]) app-ele)
   (js/console.log ::render-done))
 
 (defn main! []

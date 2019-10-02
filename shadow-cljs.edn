@@ -1,12 +1,12 @@
-{:source-paths ["src"]
+{:source-paths ["src" "example"]
  :deps {:aliases [:cljs]}
  :dev-http {8080 "target/"}
  :builds
  {:app {:target :browser
         :output-dir "target/js"
         :asset-path "/js"
-        :modules {:main {:init-fn dv.main/main!}}
+        :modules {:main {:init-fn demo.main/main!}}
         
         :devtools
-        {:after-load dv.main/reload!
+        {:after-load demo.main/reload!
          :preloads [devtools.preload]}}}}

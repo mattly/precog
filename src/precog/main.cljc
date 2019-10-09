@@ -10,12 +10,23 @@
 
 #?(:cljs (def Fragment preact/Fragment))
 
+#?(:cljs
+   (defn props->js [props-map]
+     (cljs-bean.core/->js (merge (cljs-bean.core/bean) props-map))))
+
 (defn ele [el ref key props]
   `(cljs.core/js-obj "constructor" js/undefined
                      "type" (if (contains? #{"<" "<>"} ~el) Fragment ~el)
                      "ref" (or ~ref js/undefined)
                      "key" (or ~key js/undefined)
-                     "props" (cljs-bean.core/->js (merge (cljs-bean.core/bean) ~props))))
+                     "props" (if (or (string? ~el) (.-__precog--use-bean ~el))
+                               (props->js ~props)
+                               ~props)))
+
+#?(:cljs
+   (defn use-js-props [c]
+     (set! (.-__precog--use-bean c) true)
+     c))
 
 (def prop-renames
   {:on-click :onClick

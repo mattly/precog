@@ -3,13 +3,16 @@
    ["preact/hooks" :as hooks]
    [precog.main :as precog :refer [html use-atom use-lens]]))
 
-(defn dtdd [props]
-  (html [:<> [:dt (.-dt props)] [:dd (.-dd props)]]))
+(defn dtdd [{:keys [dt dd]}]
+  (html [:<> [:dt dt] [:dd dd]]))
 
-;; hello?
-(defn app [props]
-  (let [state (.-state props)
-        *input (use-atom "fee")
+(defn UsesJsProps [props]
+  (html [:h2 "wrapped: " (.-title props)]))
+
+(precog/use-js-props UsesJsProps)
+
+(defn app [{:keys [state]}]
+  (let [*input (use-atom "fee")
         c (use-lens state #(get % :count 0))
         input (use-lens state #(get % :input ""))
         hello "hello"]
@@ -18,6 +21,7 @@
       [:div hello]
       [:div "World!!"]
       [:<> [:div "one"] [:div "two"]]
+      [UsesJsProps {:title "hello wrapped"}]
       [:dl
        [dtdd {:dt "term"
               :dd "definition"}]

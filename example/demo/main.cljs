@@ -30,7 +30,14 @@
               :dd "definiton2"}]]
       [:div
        [:div
-        "clicked " c " times"]
+        "clicked " c " times: "
+        (if (odd? c) "odd" "even")
+        ", "
+        (case c
+          0 [:em "none"]
+          1 [:em "try harder"]
+          2 [:u "that's company"]
+          [:strong "that's a crowd!"])]
        [:div
         [:button {:onClick (fn [_] (swap! state update :count inc))} "increment"]
         [:button {:onClick (fn [_] (swap! state update :count dec))} "decrement"]]]
@@ -42,13 +49,19 @@
       [:label "atom input"
        [:input {:type "text"
                 :value @*input
-                :onInput (fn [e] (reset! *input (.. e -target -value)))}]]
+                :onInput (fn [e] (reset! *input (.. e -target -value)))}]
+       " "
+       (cond
+         (zero? (count @*input)) "empty"
+         :default [:strong "some"])]
       [:ul
        (for [x (range 10)]
-         (html [:li x]))]
-      (list 
-       [:div {:key "one"} "hello"]
-       [:div {:key "two"} "world"])])))
+         [:li x])]
+      (let [greet "hello"
+            thing "world"]
+        (list
+         [:div {:key "one"} greet]
+         [:div {:key "two"} thing]))])))
 
 (def app-ele (js/document.getElementById "app"))
 

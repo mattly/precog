@@ -30,8 +30,8 @@
 
 (defn parse [form]
   (cond (vector? form)
-        (let [[cmp & prpchl] form
-              el             (cond (keyword? cmp) (name cmp)
+    (let [[cmp & prpchl] form
+          el             (cond (keyword? cmp) (name cmp)
                                    :else cmp)
               props?         (map? (first prpchl))
               props          (if props? (first prpchl) {})
@@ -44,11 +44,31 @@
                    (dissoc :ref :key)
                    (assoc :children children))))
 
-        (and (list? form) (= 'list (first form)))
-        (parse (into ["<>"] (map parse (rest form))))
+        (list? form)
+        (case (first form)
+          list
+          (parse (into ["<>"] (map parse (rest form))))
 
-        (and (list? form) (vector? (last form)))
-        (parse (last form))
+          (do let for when when-not when-let when-first when-some)
+          (concat (butlast form) 
+                  (list (parse (last form))))
+
+          (if if-not if-let if-some)
+          (concat (take 2 form) 
+                  (map parse (take-last 2 form)))
+          
+          case
+          (concat (take 2 form)
+                  (mapcat (fn [[clause expr]] [clause (parse expr)])
+                          (->> form (drop 2) (butlast) (partition 2)))
+                  (list (parse (last form))))
+          
+          cond
+          (conj (mapcat (fn [[clause expr]] [clause (parse expr)])
+                        (->> form rest (partition 2)))
+                (first form))
+          
+          form)
 
         :else
         form))

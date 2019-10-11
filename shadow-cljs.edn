@@ -1,9 +1,9 @@
 {:source-paths ["src" "example"]
  :deps {:aliases [:cljs]}
- :dev-http {8080 "target/"}
+ :dev-http {8080 "example/public/"}
  :builds
  {:demo {:target     :browser
-         :output-dir "target/js"
+         :output-dir "example/public/js"
          :asset-path "/js"
          :modules    {:main {:init-fn demo.main/main!}}
 

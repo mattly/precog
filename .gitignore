@@ -2,8 +2,9 @@
 !.clj-kondo/config.edn
 .cpcache
 .shadow-cljs
+example/public/js
 node_modules
-target/js
 pom.xml
-*.jar
 pom.properties
+target
+*.jar

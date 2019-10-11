@@ -28,10 +28,6 @@
      (set! (.-__precog--use-bean c) true)
      c))
 
-(def prop-renames
-  {:on-click :onClick
-   :on-input :onInput})
-
 (defn parse [form]
   (cond (vector? form)
         (let [[cmp & prpchl] form
@@ -46,8 +42,7 @@
                (:key props)
                (-> props
                    (dissoc :ref :key)
-                   (assoc :children children)
-                   (set/rename-keys prop-renames))))
+                   (assoc :children children))))
     :else form))
 
 #?(:clj

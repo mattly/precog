@@ -2,6 +2,13 @@
 
 This is an experiment with using CLJS and [Preact](https://preactjs.com) together. Most of the browser view engines for clojurescript rely on [React](https://reactjs.org), which is fine and dandy, but has become quite large, and is owned by Facebook, a company whose work I would rather not use.
 
+Precog is *extremely* opinionated about:
+
+- You as the clojurescript app creator should only be creating function components, not class components
+- Rerender triggers should be managed by Preact Hooks
+- Your clojurescript components should behave like clojurescript as much as possible
+- Interop with JS components should be easy and lightweight.
+
 This is still very much a work in progress. If you're interested in collaborating, drop me a line and I'll work on getting some documentation for a development environment up and going.
 
 ## Example
@@ -14,7 +21,7 @@ This is still very much a work in progress. If you're interested in collaboratin
 (defn my-form [props]
   (let [input (use-atom "")]
     (html [:form
-           [:input {:on-input (fn [e] (reset! input (.. e -target -value)))
+           [:input {:onInput (fn [e] (reset! input (.. e -target -value)))
                     :value @input
                     :type :text}]])))
 

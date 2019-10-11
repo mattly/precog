@@ -31,13 +31,13 @@
        [:div
         "clicked " c " times"]
        [:div
-        [:button {:on-click (fn [_] (swap! state update :count inc))} "increment"]
-        [:button {:on-click (fn [_] (swap! state update :count dec))} "decrement"]]]
+        [:button {:onClick (fn [_] (swap! state update :count inc))} "increment"]
+        [:button {:onClick (fn [_] (swap! state update :count dec))} "decrement"]]]
       [:div
        [:label "lens input"
         [:input {:type    "text"
                  :value   input
-                 :on-input (fn [e] (swap! state assoc :input (.. e -target -value)))}]]]
+                 :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]]]
       [:label "atom input"
        [:input {:type "text"
                 :value @*input

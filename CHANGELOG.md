@@ -8,6 +8,9 @@
     - `do`, `for`, `let`, `if` (and its ilk), `when` (and its ilk), `case`, `cond` have their expressions parsed
   I havent' ever needed to use threading macros in the process of constructing a view, and feel supporting those
   is not worth the effort at this point.
+- New & Imporved `use-atom` that doesn't make a new atom on every change
+- Added `bind-handler` whichs takes an atom, an optional set of event-processing flags, and a processing function,
+  and swaps the contents of the atom with the processing function, perhaps stopping or extracting the event's target first.
 
 ## 0.0.3 - 20191010
 

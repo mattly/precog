@@ -1,7 +1,7 @@
 (ns demo.main
   (:require
    ["preact/hooks" :as hooks]
-   [precog.main :as precog :refer [html use-atom use-lens]]))
+   [precog.main :as precog :refer [html use-atom use-lens bind-handler]]))
 
 (defn dtdd [{:keys [dt dd]}]
   (html [:<> [:dt dt] [:dd dd]]))
@@ -13,8 +13,11 @@
 
 (defn app [{:keys [state]}]
   (let [*input (use-atom "fee")
+        update-atom (bind-handler *input #{:target}
+                                  (fn [_ {:keys [value]}] value))
         c (use-lens state #(get % :count 0))
         input (use-lens state #(get % :input ""))
+        update-lens (bind-handler state (fn [s e] (assoc s :input (.. e -target -value))))
         hello "hello"]
     (html
      [:div
@@ -45,11 +48,12 @@
        [:label "lens input"
         [:input {:type    "text"
                  :value   input
-                 :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]]]
+                 :onInput update-lens}]
+        " " (count input)]]
       [:label "atom input"
        [:input {:type "text"
                 :value @*input
-                :onInput (fn [e] (reset! *input (.. e -target -value)))}]
+                :onInput update-atom}]
        " "
        (cond
          (zero? (count @*input)) "empty"

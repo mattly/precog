@@ -90,4 +90,5 @@
        (preact/render el dom-node))
 
      (def use-atom state/use-atom)
-     (def use-lens state/use-lens)))
+     (def use-lens state/use-lens)
+     (def bind-handler state/bind-handler)))

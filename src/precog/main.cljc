@@ -35,15 +35,23 @@
                                    :else cmp)
               props?         (map? (first prpchl))
               props          (if props? (first prpchl) {})
-              children       (mapv (fn [c] (if (vector? c) (parse c) c))
+              children       (mapv parse
                                    (if props? (rest prpchl) prpchl))]
-          (ele el 
+          (ele el
                (:ref props)
                (:key props)
                (-> props
                    (dissoc :ref :key)
                    (assoc :children children))))
-    :else form))
+
+        (and (list? form) (= 'list (first form)))
+        (parse (into ["<>"] (map parse (rest form))))
+
+        (and (list? form) (vector? (last form)))
+        (parse (last form))
+
+        :else
+        form))
 
 #?(:clj
    (defmacro html [form]

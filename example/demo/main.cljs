@@ -19,7 +19,8 @@
     (html
      [:div
       [:div hello]
-      [:div "World!!"]
+      (when true
+        [:strong "World!!"])
       [:<> [:div "one"] [:div "two"]]
       [UsesJsProps {:title "hello wrapped"}]
       [:dl
@@ -45,9 +46,9 @@
       [:ul
        (for [x (range 10)]
          (html [:li x]))]
-      [:<>
+      (list 
        [:div {:key "one"} "hello"]
-       [:div {:key "two"} "world"]]])))
+       [:div {:key "two"} "world"])])))
 
 (def app-ele (js/document.getElementById "app"))
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.5 - 20191013
+
+- A few small tweaks to the element constructor and preliminary tests show reducing the re-gzip bundle size in `:advanced` compilation mode of the precompiled templates from 50kb to 8kb.
+
 ## 0.0.4 - 20191010
 
 - Move HTML file for demo out of `target/` and to `example/` so lein doesn't clobber it on builds

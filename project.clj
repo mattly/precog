@@ -1,4 +1,4 @@
-(defproject mattly/precog "0.0.4"
+(defproject mattly/precog "0.0.5"
   :description "A thin wrapper around preact"
   :url "https://github.com/mattly/precog"
   :license {:name "MIT"

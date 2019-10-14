@@ -32,17 +32,17 @@
   (cond (vector? form)
     (let [[cmp & prpchl] form
           el             (cond (keyword? cmp) (name cmp)
-                                   :else cmp)
-              props?         (map? (first prpchl))
-              props          (if props? (first prpchl) {})
-              children       (mapv parse
-                                   (if props? (rest prpchl) prpchl))]
-          (ele el
-               (:ref props)
-               (:key props)
-               (-> props
-                   (dissoc :ref :key)
-                   (assoc :children children))))
+                               :else cmp)
+          props?         (map? (first prpchl))
+          props          (if props? (first prpchl) {})
+          children       (mapv parse
+                               (if props? (rest prpchl) prpchl))]
+      (ele el
+           (:ref props)
+           (:key props)
+           (-> props
+               (dissoc :ref :key)
+               (assoc :children children))))
 
         (list? form)
         (case (first form)

@@ -10,11 +10,6 @@
 
 #?(:cljs
    (do
-     (defn props->js [el props-map]
-       (if (or (string? el) (.-__precog--use-bean el))
-         (cljs-bean.core/->js (merge (cljs-bean.core/bean) props-map))
-         props-map))
-
      (defn fragment [children]
        (apply preact/createElement preact/Fragment #js {} children))
      
@@ -28,7 +23,9 @@
                      "type" ~el
                      "ref" ~ref
                      "key" ~key
-                     "props" (props->js ~el ~props)))
+                     "props" (if (or (string? ~el) (.-__precog--use-bean ~el))
+                               (cljs-bean.core/->js (merge (cljs-bean.core/bean) ~props))
+                               ~props)))
 
 (defn parse [form]
   (cond

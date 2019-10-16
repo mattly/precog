@@ -9,6 +9,11 @@
 (defn UsesJsProps [props]
   (html [:h2 "wrapped: " (.-title props)]))
 
+(defn has-children [{:keys [title children]}]
+  (html [:div
+         [:h2 title]
+         children]))
+
 (precog/use-js-props UsesJsProps)
 
 (defn app [{:keys [state]}]
@@ -26,6 +31,9 @@
         [:strong "World!!"])
       [:<> [:div "one"] [:div "two"]]
       [UsesJsProps {:title "hello wrapped"}]
+      [has-children {:title "hello children"}
+       [:div "why hello papa"]
+       [:div "yes hello"]]
       [:dl
        [dtdd {:dt "term"
               :dd "definition"}]

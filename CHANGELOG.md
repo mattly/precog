@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.7 - 20191015
+
+- Fix a bug with the previous `bind-handler` change. I should probably start thinking about tests.
+
 ## 0.0.6 - 20191015
 
 - moved a small bit of the compiled output back to a more verbose form, it saved virtually nothing in a gzipped bundle and cost a few milliseconds of render time

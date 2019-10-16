@@ -1,4 +1,4 @@
-# CLJS/Preact Base
+# precog
 
 This is an experiment with using CLJS and [Preact](https://preactjs.com) together. Most of the browser view engines for clojurescript rely on [React](https://reactjs.org), which is fine and dandy, but has become quite large, and is owned by Facebook, a company whose work I would rather not use.
 
@@ -9,7 +9,9 @@ Precog is *extremely* opinionated about:
 - Your clojurescript components should behave like clojurescript as much as possible
 - Interop with JS components should be easy and lightweight.
 
-This is still very much a work in progress. If you're interested in collaborating, drop me a line and I'll work on getting some documentation for a development environment up and going.
+This is still very much a work in progress. See the demo for examples.
+
+If you're interested in collaborating, drop me a line and I'll work on getting some documentation for a development environment up and going.
 
 ## Example
 
@@ -19,9 +21,10 @@ This is still very much a work in progress. If you're interested in collaboratin
    [precog.main :as precog :refer [html use-atom]]))
 
 (defn my-form [props]
-  (let [input (use-atom "")]
+  (let [input (use-atom "")
+        update-input (bind-hanlder input #{:target} (fn [s t] (:value t)))]
     (html [:form
-           [:input {:onInput (fn [e] (reset! input (.. e -target -value)))
+           [:input {:onInput update-input
                     :value @input
                     :type :text}]])))
 

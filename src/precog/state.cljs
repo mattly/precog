@@ -41,5 +41,5 @@
               identity
               (xevent event-flags))]
      (hooks/useMemo
-      (fn [] (fn [e] (swap! *store f (xe e) args)))
+      (fn [] (fn [e] (apply swap! *store f (xe e) args)))
       #js [*store]))))

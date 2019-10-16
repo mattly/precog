@@ -36,11 +36,10 @@
       event)))
 
 (defn bind-handler 
-  ([*store f] (bind-handler *store #{} f))
-  ([*store event-flags f]
+  ([*store event-flags f & args]
    (let [xe (if (empty? event-flags)
               identity
               (xevent event-flags))]
      (hooks/useMemo
-      (fn [] (fn [e] (swap! *store f (xe e))))
+      (fn [] (fn [e] (swap! *store f (xe e) args)))
       #js [*store]))))

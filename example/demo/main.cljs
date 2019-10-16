@@ -22,7 +22,7 @@
                                   (fn [_ {:keys [value]}] value))
         c (use-lens state #(get % :count 0))
         input (use-lens state #(get % :input ""))
-        update-lens (bind-handler state (fn [s e] (assoc s :input (.. e -target -value))))
+        update-lens (bind-handler state #{:target} (fn [s {:keys [value]}] (assoc s :input value)))
         hello "hello"]
     (html
      [:div

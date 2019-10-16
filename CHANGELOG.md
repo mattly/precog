@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.6 - 20191015
+
+- moved a small bit of the compiled output back to a more verbose form, it saved virtually nothing in a gzipped bundle and cost a few milliseconds of render time
+- `bind-handler` now requires an event-flags map as its second argument, and accepts supplimental arguments that will be passed to the handling function. So `(bind-handler #{} myfn 1 2)` will call `(myfn state event 1 2)`
+
 ## 0.0.5 - 20191013
 
 - A few small tweaks to the element constructor and preliminary tests show reducing the re-gzip bundle size in `:advanced` compilation mode of the precompiled templates from 50kb to 8kb.

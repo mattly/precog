@@ -3,14 +3,14 @@
    [cljs-bean.core :as bean :refer [->clj bean]]
    ["preact/hooks" :as hooks]))
 
-(defn use-lens [*store f]
-  (let [[value update-value] (hooks/useState (f @*store))]
+(defn use-lens [*store f & args]
+  (let [[value update-value] (hooks/useState (apply f @*store args))]
     (hooks/useEffect
      (fn [_]
        (let [k (gensym "useLens")]
          (add-watch *store k
                     (fn update-lens-hook [_ _ _ new-state]
-                      (update-value (f new-state))))
+                      (update-value (apply f new-state args))))
          (fn [] (remove-watch *store k)))))
     value))
 

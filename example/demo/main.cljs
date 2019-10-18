@@ -8,22 +8,58 @@
 
 (defn UsesJsProps [props]
   (html [:h2 "wrapped: " (.-title props)]))
+(precog/use-js-props UsesJsProps)
 
 (defn has-children [{:keys [title children]}]
   (html [:div
          [:h2 title]
          children]))
 
-(precog/use-js-props UsesJsProps)
+(defn clicker []
+  (let [clicks (use-atom 0)
+        increment (bind-handler clicks nil inc)
+        decrement (bind-handler clicks nil dec)]
+    (html
+     [:div
+      [:div
+       "clicked " @clicks " times: "
+       (if (odd? @clicks) "odd" "even")
+       ", "
+       (case @clicks
+         0 [:em "none"]
+         1 [:em "try harder"]
+         2 [:u "that's company"]
+         [:strong "that's a crowd!"])]
+      [:div
+       [:button {:onClick increment} "increment"]
+       [:button {:onClick decrement} "decrement"]]])))
+
+(defn lens-input [{:keys [state]}]
+  (let [input (use-lens state get :input "")
+        update-input (bind-handler state #{:target} (fn [s {:keys [value]}] (assoc s :input value)))]
+    (html
+     [:div
+      [:label "lens input"
+       [:input {:type    "text"
+                :value   input
+                :onInput update-input}]
+       " " (count input)]])))
+
+(defn atom-input []
+  (let [*input (use-atom "foo")
+        update-input (bind-handler *input #{:target} (fn [_ {:keys [value]}] value))]
+    (html
+     [:label "atom input"
+      [:input {:type    "text"
+               :value   @*input
+               :onInput update-input}]
+      " "
+      (cond
+        (zero? (count @*input)) "empty"
+        :default [:strong "some"])])))
 
 (defn app [{:keys [state]}]
-  (let [*input (use-atom "fee")
-        update-atom (bind-handler *input #{:target}
-                                  (fn [_ {:keys [value]}] value))
-        c (use-lens state #(get % :count 0))
-        input (use-lens state #(get % :input ""))
-        update-lens (bind-handler state #{:target} (fn [s {:keys [value]}] (assoc s :input value)))
-        hello "hello"]
+  (let [hello "hello"]
     (html
      [:div
       [:div hello]
@@ -39,33 +75,9 @@
               :dd "definition"}]
        [dtdd {:dt "term2"
               :dd "definiton2"}]]
-      [:div
-       [:div
-        "clicked " c " times: "
-        (if (odd? c) "odd" "even")
-        ", "
-        (case c
-          0 [:em "none"]
-          1 [:em "try harder"]
-          2 [:u "that's company"]
-          [:strong "that's a crowd!"])]
-       [:div
-        [:button {:onClick (fn [_] (swap! state update :count inc))} "increment"]
-        [:button {:onClick (fn [_] (swap! state update :count dec))} "decrement"]]]
-      [:div
-       [:label "lens input"
-        [:input {:type    "text"
-                 :value   input
-                 :onInput update-lens}]
-        " " (count input)]]
-      [:label "atom input"
-       [:input {:type "text"
-                :value @*input
-                :onInput update-atom}]
-       " "
-       (cond
-         (zero? (count @*input)) "empty"
-         :default [:strong "some"])]
+      [clicker]
+      [lens-input {:state state}]
+      [atom-input]
       [:ul
        (for [x (range 10)]
          [:li x])]

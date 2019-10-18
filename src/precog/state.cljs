@@ -25,21 +25,3 @@
                       (update-value new-state)))
          (fn [] (remove-watch *store k)))))
     *store))
-
-(defn- xevent [flags]
-  (fn [event]
-    (when (contains? flags :stop)
-      (.stopPropagation event)
-      (.preventDefault event))
-    (if (contains? flags :target)
-      (->clj (bean (.-target event)))
-      event)))
-
-(defn bind-handler 
-  ([*store event-flags f & args]
-   (let [xe (if (empty? event-flags)
-              identity
-              (xevent event-flags))]
-     (hooks/useMemo
-      (fn [] (fn [e] (apply swap! *store f (xe e) args)))
-      #js [*store]))))

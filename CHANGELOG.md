@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.0.8 - 20191018
+
+- remove `bind-handler`, it doesn't provide much real wins over inline functions, at much higher complexity.
+- `use-lens` now accepts supplimental arguments which will be applied to the lens function alongside the state.
+
 ## 0.0.7 - 20191015
 
 - Fix a bug with the previous `bind-handler` change. I should probably start thinking about tests.

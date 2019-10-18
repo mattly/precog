@@ -1,7 +1,7 @@
 (ns demo.main
   (:require
    ["preact/hooks" :as hooks]
-   [precog.main :as precog :refer [html use-atom use-lens bind-handler]]))
+   [precog.main :as precog :refer [html use-atom use-lens]]))
 
 (defn dtdd [{:keys [dt dd]}]
   (html [:<> [:dt dt] [:dd dd]]))
@@ -16,9 +16,7 @@
          children]))
 
 (defn clicker []
-  (let [clicks (use-atom 0)
-        increment (bind-handler clicks nil inc)
-        decrement (bind-handler clicks nil dec)]
+  (let [clicks (use-atom 0)]
     (html
      [:div
       [:div
@@ -31,28 +29,26 @@
          2 [:u "that's company"]
          [:strong "that's a crowd!"])]
       [:div
-       [:button {:onClick increment} "increment"]
-       [:button {:onClick decrement} "decrement"]]])))
+       [:button {:onClick (fn [_] swap! clicks inc)} "increment"]
+       [:button {:onClick (fn [_] swap! clicks dec)} "decrement"]]])))
 
 (defn lens-input [{:keys [state]}]
-  (let [input (use-lens state get :input "")
-        update-input (bind-handler state #{:target} (fn [s {:keys [value]}] (assoc s :input value)))]
+  (let [input (use-lens state get :input "")]
     (html
      [:div
       [:label "lens input"
        [:input {:type    "text"
                 :value   input
-                :onInput update-input}]
+                :onInput (fn [e] (swap! input assoc :input (.. e -target -value)))}]
        " " (count input)]])))
 
 (defn atom-input []
-  (let [*input (use-atom "foo")
-        update-input (bind-handler *input #{:target} (fn [_ {:keys [value]}] value))]
+  (let [*input (use-atom "foo")]
     (html
      [:label "atom input"
       [:input {:type    "text"
                :value   @*input
-               :onInput update-input}]
+               :onInput (fn [e] (reset! *input (.. e -target -value)))}]
       " "
       (cond
         (zero? (count @*input)) "empty"

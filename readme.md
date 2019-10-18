@@ -20,16 +20,14 @@ If you're interested in collaborating, drop me a line and I'll work on getting s
   (:require
    [precog.main :as precog :refer [html use-atom]]))
 
-(defn my-form [props]
-  (let [input (use-atom "")
-        update-input (bind-hanlder input #{:target} (fn [s t] (:value t)))]
+(defn my-form [{:keys [initial]}]
+  (let [input (use-atom initial)]
     (html [:form
-           [:input {:onInput update-input
-                    :value @input
-                    :type :text}]])))
+           [:input {:onInput (fn [e] (reset! input (.. e -target -value)))
+                    :value @input}]])))
 
 (defn render []
-  (precog/render (html [my-form])
+  (precog/render (html [my-form {:initial "foo"}])
                  (js/document.getElementById "app"))
 ```
 

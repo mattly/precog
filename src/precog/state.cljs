@@ -1,27 +1,27 @@
 (ns precog.state
   (:require
-   [cljs-bean.core :as bean :refer [->clj bean]]
    ["preact/hooks" :as hooks]))
 
-(defn use-lens [*store f & args]
+(defn- use-atom-watcher [*atom on-update]
+  (hooks/useEffect
+   (fn atom-watcher [_]
+     (let [k (gensym)]
+       (add-watch *atom k
+                  (fn atom-watch-hook [_ _ _ new-state]
+                    (on-update new-state)))
+       (fn [] (remove-watch *atom k))))))
+
+(defn use-focus 
+  "focuses into an atom, leveraging use-state to update when the value at the (f @*store) changes"
+  [*store f & args]
   (let [[value update-value] (hooks/useState (apply f @*store args))]
-    (hooks/useEffect
-     (fn [_]
-       (let [k (gensym "useLens")]
-         (add-watch *store k
-                    (fn update-lens-hook [_ _ _ new-state]
-                      (update-value (apply f new-state args))))
-         (fn [] (remove-watch *store k)))))
+    (use-atom-watcher *store (fn [v] (update-value (apply f v args))))
     value))
 
-(defn use-atom [default-val]
-  (let [[*store update-store] (hooks/useState (fn [] (atom default-val)))
-        [value update-value]  (hooks/useState @*store)]
-    (hooks/useEffect
-     (fn [_]
-       (let [k (gensym "useAtom")]
-         (add-watch *store k
-                    (fn update-atom-hook [_ _ _ new-state]
-                      (update-value new-state)))
-         (fn [] (remove-watch *store k)))))
+(defn use-atom 
+  "provides an atom which updates state when its value changes"
+  [default-val]
+  (let [[*store _update-store] (hooks/useState (fn [] (atom default-val)))
+        [_val update-value]  (hooks/useState @*store)]
+    (use-atom-watcher *store update-value)
     *store))

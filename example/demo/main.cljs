@@ -1,7 +1,7 @@
 (ns demo.main
   (:require
    ["preact/hooks" :as hooks]
-   [precog.main :as precog :refer [html use-atom use-lens]]))
+   [precog.core :as precog :refer [html use-atom use-focus]]))
 
 (defn dtdd [{:keys [dt dd]}]
   (html [:<> [:dt dt] [:dd dd]]))
@@ -16,30 +16,32 @@
          children]))
 
 (defn clicker []
-  (let [clicks (use-atom 0)]
+  (let [*clicks (use-atom 0)
+        clicks @*clicks]
     (html
      [:div
       [:div
-       "clicked " @clicks " times: "
-       (if (odd? @clicks) "odd" "even")
+       "clicked " clicks " times: "
+       (if (odd? clicks) "odd" "even")
        ", "
-       (case @clicks
-         0 [:em "none"]
-         1 [:em "try harder"]
-         2 [:u "that's company"]
-         [:strong "that's a crowd!"])]
+       (cond
+         (neg? clicks) [:strong "how do you have negative clicks???"]
+         (zero? clicks) [:em "none"]
+         (= 1 clicks) [:em "try harder"]
+         (= 2 clicks) [:u "that's company"]
+         :else [:strong "that's a crowd!"])]
       [:div
-       [:button {:onClick (fn [_] swap! clicks inc)} "increment"]
-       [:button {:onClick (fn [_] swap! clicks dec)} "decrement"]]])))
+       [:button {:onClick (fn [_] (swap! *clicks inc))} "increment"]
+       [:button {:onClick (fn [_] (swap! *clicks dec))} "decrement"]]])))
 
 (defn lens-input [{:keys [state]}]
-  (let [input (use-lens state get :input "")]
+  (let [input (use-focus state get :input "")]
     (html
      [:div
-      [:label "lens input"
+      [:label "atom focus input"
        [:input {:type    "text"
                 :value   input
-                :onInput (fn [e] (swap! input assoc :input (.. e -target -value)))}]
+                :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]
        " " (count input)]])))
 
 (defn atom-input []
@@ -52,7 +54,7 @@
       " "
       (cond
         (zero? (count @*input)) "empty"
-        :default [:strong "some"])])))
+        :else [:strong (count @*input)])])))
 
 (defn app [{:keys [state]}]
   (let [hello "hello"]

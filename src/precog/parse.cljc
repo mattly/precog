@@ -1,22 +1,11 @@
-(ns precog.main
-  #?(:cljs (:require-macros [precog.main]))
-  (:require
-   [clojure.set :as set]
-   #?@(:cljs
-       [[precog.state :as state]
-        [cljs.reader :as reader]
-        [cljs-bean.core :refer [bean ->js ->clj]]
-        ["preact" :as preact]])))
+(ns precog.parse
+  #?(:cljs (:require ["preact" :as preact])))
+
+(declare fragment)
 
 #?(:cljs
-   (do
-     (defn fragment [children]
-       (apply preact/createElement preact/Fragment #js {} children))
-     
-     (defn use-js-props [c]
-       (set! (.-__precog--use-bean c) true)
-       c)))
-
+   (defn fragment [children]
+     (apply preact/createElement preact/Fragment #js {} children)))
 
 (defn ele [el ref key props]
   `(cljs.core/js-obj "constructor" js/undefined
@@ -43,8 +32,8 @@
              (:ref props)
              (:key props)
              (-> props
-               (dissoc :ref :key)
-               (assoc :children children)))))
+                 (dissoc :ref :key)
+                 (assoc :children children)))))
 
     (list? form)
     (case (first form)
@@ -74,22 +63,3 @@
 
     :else
     form))
-
-#?(:clj
-   (defmacro html [form]
-     (if-not (vector? form)
-       (throw (ex-info "did not receive a vector!" {:form form}))
-       (parse form)))) 
-
-#?(:cljs
-   (do
-     (defn render [el dom-node]
-       (loop []
-         (if (.hasChildNodes dom-node)
-           (do (.removeChild dom-node (.-firstChild dom-node))
-               (recur))
-           :done))
-       (preact/render el dom-node))
-
-     (def use-atom state/use-atom)
-     (def use-lens state/use-lens)))

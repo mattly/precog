@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.9 - 20191025
+
+- move `precog.main` to `precog.core`, split `html` macro into a clj namespace and main cljs functions into theirs; parse/ele go into `precog.parse` cljc namespace.
+- fix demo breakage from previous breaking out into functions
+- extract atom-watching helper into own function
+- rename `use-lens` to `use-focus`, since _lens_ implies two-way binding
+
 ## 0.0.8 - 20191018
 
 - remove `bind-handler`, it doesn't provide much real wins over inline functions, at much higher complexity.

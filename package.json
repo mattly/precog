@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "emotion": "^10.0.17",
     "preact": "^10.0.0",
     "shadow-cljs": "^2.8.52"
   }

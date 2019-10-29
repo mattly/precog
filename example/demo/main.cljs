@@ -1,7 +1,7 @@
 (ns demo.main
   (:require
-   ["preact/hooks" :as hooks]
-   [precog.core :as precog :refer [html use-atom use-focus]]))
+   [precog.core :as precog :refer [html use-atom use-focus]]
+   [precog.styled :refer [styled foo]]))
 
 (defn dtdd [{:keys [dt dd]}]
   (html [:<> [:dt dt] [:dd dd]]))
@@ -15,11 +15,20 @@
          [:h2 title]
          children]))
 
+(def padded (styled :div #js {:margin "20px 0"}))
+
+(def button
+  (styled :button
+          {:border       "1px solid #ccc"
+           :borderRadius "5px"
+           :marginRight  (fn [p] (get p :ml 0))
+           :padding      "3px 5px"}))
+
 (defn clicker []
   (let [*clicks (use-atom 0)
         clicks @*clicks]
     (html
-     [:div
+     [padded
       [:div
        "clicked " clicks " times: "
        (if (odd? clicks) "odd" "even")
@@ -31,8 +40,10 @@
          (= 2 clicks) [:u "that's company"]
          :else [:strong "that's a crowd!"])]
       [:div
-       [:button {:onClick (fn [_] (swap! *clicks inc))} "increment"]
-       [:button {:onClick (fn [_] (swap! *clicks dec))} "decrement"]]])))
+       [button {:onClick (fn [_] (swap! *clicks inc)) :ml "5px"} "increment"]
+       [button {:onClick (fn [_] (swap! *clicks dec))
+                :disabled (not (pos? clicks))}
+        "decrement"]]])))
 
 (defn lens-input [{:keys [state]}]
   (let [input (use-focus state get :input "")]

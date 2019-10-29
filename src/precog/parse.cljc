@@ -1,5 +1,7 @@
 (ns precog.parse
-  #?(:cljs (:require ["preact" :as preact])))
+  #?(:cljs (:require 
+            [cljs-bean.core]
+            ["preact" :as preact])))
 
 (declare fragment)
 

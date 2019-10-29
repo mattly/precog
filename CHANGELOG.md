@@ -2,14 +2,18 @@
 
 ## 0.0.9 - 20191025
 
-- move `precog.main` to `precog.core`, split `html` macro into a clj namespace and main cljs functions into theirs; parse/ele go into `precog.parse` cljc namespace.
+Lots of breaking changes here:
+
+- *breaking* move `precog.main` to `precog.core`, split `html` macro into a clj namespace and main cljs functions into theirs; parse/ele go into `precog.parse` cljc namespace.
 - fix demo breakage from previous breaking out into functions
 - extract atom-watching helper into own function
-- rename `use-lens` to `use-focus`, since _lens_ implies two-way binding
+- *breaking* rename `use-lens` to `use-focus`, since _lens_ implies two-way binding
+- *maybe breaking* remove unused cljss library from deps
+- add experimental `styled` component helper relying on emotion
 
 ## 0.0.8 - 20191018
 
-- remove `bind-handler`, it doesn't provide much real wins over inline functions, at much higher complexity.
+- *breaking* remove `bind-handler`, it doesn't provide much real wins over inline functions, at much higher complexity.
 - `use-lens` now accepts supplimental arguments which will be applied to the lens function alongside the state.
 
 ## 0.0.7 - 20191015
@@ -19,7 +23,7 @@
 ## 0.0.6 - 20191015
 
 - moved a small bit of the compiled output back to a more verbose form, it saved virtually nothing in a gzipped bundle and cost a few milliseconds of render time
-- `bind-handler` now requires an event-flags map as its second argument, and accepts supplimental arguments that will be passed to the handling function. So `(bind-handler #{} myfn 1 2)` will call `(myfn state event 1 2)`
+- *breaking* `bind-handler` now requires an event-flags map as its second argument, and accepts supplimental arguments that will be passed to the handling function. So `(bind-handler #{} myfn 1 2)` will call `(myfn state event 1 2)`
 
 ## 0.0.5 - 20191013
 

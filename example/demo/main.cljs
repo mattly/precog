@@ -1,7 +1,7 @@
 (ns demo.main
   (:require
    [precog.core :as precog :refer [html use-atom use-focus]]
-   [precog.styled :refer [styled foo]]))
+   [precog.styled :refer [styled css]]))
 
 (defn dtdd [{:keys [dt dd]}]
   (html [:<> [:dt dt] [:dd dd]]))
@@ -17,33 +17,35 @@
 
 (def padded (styled :div #js {:margin "20px 0"}))
 
-(def button
-  (styled :button
-          {:border       "1px solid #ccc"
-           :borderRadius "5px"
-           :marginRight  (fn [p] (get p :ml 0))
-           :padding      "3px 5px"}))
+(defn !button [p]
+  (css #js
+   {:border       "1px solid #ccc"
+    :borderRadius "5px"
+    :marginRight  (get p :ml 0)
+    :padding      "3px 5px"}))
 
 (defn clicker []
   (let [*clicks (use-atom 0)
         clicks @*clicks]
     (html
-     [padded
-      [:div
-       "clicked " clicks " times: "
-       (if (odd? clicks) "odd" "even")
-       ", "
-       (cond
-         (neg? clicks) [:strong "how do you have negative clicks???"]
-         (zero? clicks) [:em "none"]
-         (= 1 clicks) [:em "try harder"]
-         (= 2 clicks) [:u "that's company"]
-         :else [:strong "that's a crowd!"])]
-      [:div
-       [button {:onClick (fn [_] (swap! *clicks inc)) :ml "5px"} "increment"]
-       [button {:onClick (fn [_] (swap! *clicks dec))
-                :disabled (not (pos? clicks))}
-        "decrement"]]])))
+     [:div {:id "clicker"}
+      [padded
+       [:div
+        "clicked " clicks " times: "
+        (if (odd? clicks) "odd" "even")
+        ", "
+        (cond
+          (neg? clicks) [:strong "how do you have negative clicks???"]
+          (zero? clicks) [:em "none"]
+          (= 1 clicks) [:em "try harder"]
+          (= 2 clicks) [:u "that's company"]
+          :else [:strong "that's a crowd!"])]
+       [:div
+        [:button {:onClick (fn [_] (swap! *clicks inc)) :class (!button {:ml "5px"})} "increment"]
+        [:button {:onClick  (fn [_] (swap! *clicks dec))
+                  :class    (!button {})
+                  :disabled (not (pos? clicks))}
+         "decrement"]]]])))
 
 (defn lens-input [{:keys [state]}]
   (let [input (use-focus state get :input "")]

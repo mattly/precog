@@ -23,5 +23,5 @@
           "key" js/undefined
           "props" (cljs-bean.core/->js
                    (merge (cljs-bean.core/bean)
-                          props#
+                          {:children (:children props#)}
                           {:class (style# props#)}))))))

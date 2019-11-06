@@ -29,7 +29,9 @@
 
 (defn clicker []
   (let [*clicks (use-atom 0)
-        clicks @*clicks]
+        clicks @*clicks
+        incr (precog/use-callback (fn [] (swap! *clicks inc)) [*clicks])
+        decr (precog/use-callback (fn [] (swap! *clicks dec)) [*clicks])]
     (html
      [:div {:id "clicker"}
       [padded
@@ -44,42 +46,52 @@
           (= 2 clicks) [:u "that's company"]
           :else [:strong "that's a crowd!"])]
        [:div
-        [:button {:onClick (fn [_] (swap! *clicks inc)) :class (!button {:ml "5px"})} "increment"]
-        [:button {:onClick  (fn [_] (swap! *clicks dec))
+        [:button {:onClick incr :class (!button {:ml "5px"})} "increment"]
+        [:button {:onClick  decr
                   :class    (!button {})
                   :disabled (not (pos? clicks))}
          "decrement"]]]])))
 
+(defn set-input [state e]
+  (swap! state assoc :input (.. e -target -value)))
+
 (defn lens-input [{:keys [state]}]
-  (let [input (use-focus state get :input "")]
+  (let [input (use-focus state get :input "")
+        onInput (precog/bind-callback set-input [state])]
     (html
      [:div
       [:label "atom focus input"
        [:input {:type    "text"
                 :value   input
-                :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]
+                :onInput onInput}]
        " " (count input)]])))
 
 (defn lens-context-input []
   (let [state (precog/use-context AtomContext)
-        input (use-focus state get :input "")]
+        input (use-focus state get :input "")
+        onInput (precog/bind-callback set-input [state])]
     (html [:div
            [:label "atom context input"
             [:input {:type    "text"
                      :value   input
-                     :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]]])))
+                     :onInput onInput}]]])))
 
 (defn atom-input []
-  (let [*input (use-atom "foo")]
+  (let [*input (use-atom "foo")
+        onInput (precog/use-callback (fn [e] (reset! *input (.. e -target -value))) [*input])
+        context-input (use-focus (precog/use-context AtomContext) get :input)
+        length (precog/bind-memo (fn [i j] (+ (count i) (count j))) [(use-focus *input identity) context-input])]
     (html
-     [:label "atom input"
-      [:input {:type    "text"
-               :value   @*input
-               :onInput (fn [e] (reset! *input (.. e -target -value)))}]
-      " "
-      (cond
-        (zero? (count @*input)) "empty"
-        :else [:strong (count @*input)])])))
+     [:div
+      [:label "atom input"
+       [:input {:type    "text"
+                :value   @*input
+                :onInput onInput}]
+       " this: "
+       (cond
+         (zero? (count @*input)) "empty"
+         :else [:strong (count @*input)])]
+      [:div "memo w/ shared: " length]])))
 
 (defn app [{:keys [state]}]
   (let [hello "hello"]

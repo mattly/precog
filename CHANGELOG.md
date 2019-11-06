@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.10 - 20191105
+
+- *breaking* make `use-memo` a macro instead of a redef of `hooks/useMemo`. It converts the dependencies argument to a javascript array for you.
+- *breaking* make `use-callback` a macro instead of a redef of `hooks/useCallback`. It converts the dependencies argument to a javascript array for you
+- add `bind-memo`, similar to `use-memo`, but partially applies the deps to the memo'd function. This is the replacement for re-frame's subscription chaining. See the demo for an example of how this works.
+- add `bind-callback`, similar to `use-callback`, but partially applies the deps to the callback function. See the demo for examples on how this makes for really easy event handlers. This is what `bind-handler` wanted to be.
+
 ## 0.0.9 - 20191025
 
 Lots of breaking changes here:

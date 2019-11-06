@@ -25,15 +25,19 @@
 
 (def use-state hooks/useState)
 (def use-reducer hooks/useReducer)
-(def use-memo hooks/useMemo)
-(def use-callback hooks/useCallback)
+
+(def ^:private useMemo hooks/useMemo)
+(def ^:private useCallback hooks/useCallback)
+
 (def use-ref hooks/useRef)
-(def use-context hooks/useContext)
 (def use-effect hooks/useEffect)
 (def use-layout-effect hooks/useLayoutEffect)
 
 (def create-context preact/createContext)
+
 (defn context-provider [context]
   (let [provider (.-Provider context)]
     (use-js-props provider)
     provider))
+
+(def use-context hooks/useContext)

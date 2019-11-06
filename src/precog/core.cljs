@@ -4,7 +4,8 @@
    [precog.parse]
    [precog.state :as state]
    [cljs-bean.core]
-   ["preact" :as preact]))
+   ["preact" :as preact]
+   ["preact/hooks" :as hooks]))
 
 
 (defn fragment [children]
@@ -22,11 +23,17 @@
 (def use-atom state/use-atom)
 (def use-focus state/use-focus)
 
-(def use-state preact/useState)
-(def use-reducer preact/useReducer)
-(def use-memo preact/useMemo)
-(def use-callback preact/useCallback)
-(def use-ref preact/useRef)
-(def use-context preact/useContext)
-(def use-effect preact/useEffect)
-(def use-layout-effect preact/useLayoutEffect)
+(def use-state hooks/useState)
+(def use-reducer hooks/useReducer)
+(def use-memo hooks/useMemo)
+(def use-callback hooks/useCallback)
+(def use-ref hooks/useRef)
+(def use-context hooks/useContext)
+(def use-effect hooks/useEffect)
+(def use-layout-effect hooks/useLayoutEffect)
+
+(def create-context preact/createContext)
+(defn context-provider [context]
+  (let [provider (.-Provider context)]
+    (use-js-props provider)
+    provider))

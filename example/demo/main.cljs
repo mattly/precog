@@ -3,6 +3,9 @@
    [precog.core :as precog :refer [html use-atom use-focus]]
    [precog.styled :refer [styled css]]))
 
+(def AtomContext (precog/create-context (atom {})))
+(def AtomProvider (precog/context-provider AtomContext))
+
 (defn dtdd [{:keys [dt dd]}]
   (html [:<> [:dt dt] [:dd dd]]))
 
@@ -57,6 +60,15 @@
                 :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]
        " " (count input)]])))
 
+(defn lens-context-input []
+  (let [state (precog/use-context AtomContext)
+        input (use-focus state get :input "")]
+    (html [:div
+           [:label "atom context input"
+            [:input {:type    "text"
+                     :value   input
+                     :onInput (fn [e] (swap! state assoc :input (.. e -target -value)))}]]])))
+
 (defn atom-input []
   (let [*input (use-atom "foo")]
     (html
@@ -72,31 +84,33 @@
 (defn app [{:keys [state]}]
   (let [hello "hello"]
     (html
-     [:div
-      [:div hello]
-      (when true
-        [:strong "World!!"])
-      [:<> [:div "one"] [:div "two"]]
-      [UsesJsProps {:title "hello wrapped"}]
-      [has-children {:title "hello children"}
-       [:div "why hello papa"]
-       [:div "yes hello"]]
-      [:dl
-       [dtdd {:dt "term"
-              :dd "definition"}]
-       [dtdd {:dt "term2"
-              :dd "definiton2"}]]
-      [clicker]
-      [lens-input {:state state}]
-      [atom-input]
-      [:ul
-       (for [x (range 10)]
-         [:li x])]
-      (let [greet "hello"
-            thing "world"]
-        (list
-         [:div {:key "one"} greet]
-         [:div {:key "two"} thing]))])))
+     [AtomProvider {:value state}
+      [:div
+       [:div hello]
+       (when true
+         [:strong "World!!"])
+       [:<> [:div "one"] [:div "two"]]
+       [UsesJsProps {:title "hello wrapped"}]
+       [has-children {:title "hello children"}
+        [:div "why hello papa"]
+        [:div "yes hello"]]
+       [:dl
+        [dtdd {:dt "term"
+               :dd "definition"}]
+        [dtdd {:dt "term2"
+               :dd "definiton2"}]]
+       [clicker]
+       [lens-input {:state state}]
+       [lens-context-input]
+       [atom-input]
+       [:ul
+        (for [x (range 10)]
+          [:li x])]
+       (let [greet "hello"
+             thing "world"]
+         (list
+          [:div {:key "one"} greet]
+          [:div {:key "two"} thing]))]])))
 
 (def app-ele (js/document.getElementById "app"))
 

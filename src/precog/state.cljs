@@ -15,7 +15,10 @@
   "focuses into an atom, leveraging use-state to update when the value at the (f @*store) changes"
   [*store f & args]
   (let [[value update-value] (hooks/useState (apply f @*store args))]
-    (use-atom-watcher *store (fn [v] (update-value (apply f v args))))
+    (use-atom-watcher *store (fn [v] 
+                               (let [next-v (apply f v args)]
+                                 (when-not (= v next-v)
+                                   (update-value next-v)))))
     value))
 
 (defn use-atom 

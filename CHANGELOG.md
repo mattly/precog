@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.0.11 - 20191105
+
+- for `use-focus`, only call hook's update function when the value of the focus is not equal to the previous value
+
 ## 0.0.10 - 20191105
 
 - *breaking* make `use-memo` a macro instead of a redef of `hooks/useMemo`. It converts the dependencies argument to a javascript array for you.

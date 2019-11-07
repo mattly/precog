@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.0.12 - 20191107
+
+**Breaking** changes in the name of performance:
+
+- moved the `parse` namespace functions for the `core/html` macro into `core`, removing the `parse` namespace
+- make `ele` construct its preact js object and props js value for that object at compile-time with `cljs.tagged-literals/read-js` instead of using bean. This is so much faster it's ridiculous.
+- similarly, the `children` value on `props` is now converted to a js array with `read-js` for normal children, instead of being converted implicitly by `cljs-bean`. This broke handling of the output of collections produced by `for`, so we're covering that case in the macro by wrapping the for call in a `clj->js` to convert the resulting list into a js array. This is getting pretty hacky, and since templates are specified at compile-time and not generated via data, I'm beginning to think that providing a macro to transform hiccup isn't worth it, and instead going the route of providing macros for each element, such as `(dom/div ...)` instead, which would decomplect the whole thing nicely.
+- `precog.styled/css` no longer converts clojure maps to javascript, you have to provide javascript objects directly. I'm thinking about how to rework this as a macro that can do the conversion at compile-time, but doing this at runtime required a lot of overhead.
+
+Bugs:
+
+- fix a bug with the previous change to `use-focus`
+
 ## 0.0.11 - 20191105
 
 - for `use-focus`, only call hook's update function when the value of the focus is not equal to the previous value

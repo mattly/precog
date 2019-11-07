@@ -1,5 +1,6 @@
 (ns precog.state
   (:require
+   [clojure.data :refer [diff]]
    ["preact/hooks" :as hooks]))
 
 (defn- use-atom-watcher [*atom on-update]
@@ -17,7 +18,7 @@
   (let [[value update-value] (hooks/useState (apply f @*store args))]
     (use-atom-watcher *store (fn [v] 
                                (let [next-v (apply f v args)]
-                                 (when-not (= v next-v)
+                                 (when-not (= value next-v)
                                    (update-value next-v)))))
     value))
 

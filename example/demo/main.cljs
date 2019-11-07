@@ -94,7 +94,9 @@
       [:div "memo w/ shared: " length]])))
 
 (defn app [{:keys [state]}]
-  (let [hello "hello"]
+  (let [derp (html [:div (for [x (range 3)] [:li x])])
+        hello "hello"]
+    (js/console.log derp)
     (html
      [AtomProvider {:value state}
       [:div
@@ -116,13 +118,15 @@
        [lens-context-input]
        [atom-input]
        [:ul
+        [:li -1]
         (for [x (range 10)]
-          [:li x])]
+          [:li {:key x} x])
+        [:li 10]]
        (let [greet "hello"
              thing "world"]
          (list
-          [:div {:key "one"} greet]
-          [:div {:key "two"} thing]))]])))
+          [:div {:key "one"} "greet: " greet]
+          [:div {:key "two"} "thing: " thing]))]])))
 
 (def app-ele (js/document.getElementById "app"))
 
@@ -131,6 +135,7 @@
 (defn render []
   (js/console.log ::render)
   (precog/render (html [app {:state state}]) app-ele)
+  ; (precog/render (precog/div {} "hello") app-ele)
   (js/console.log ::render-done))
 
 (defn main! []

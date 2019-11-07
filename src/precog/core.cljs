@@ -1,7 +1,6 @@
 (ns precog.core
   (:require-macros [precog.core])
   (:require
-   [precog.parse]
    [precog.state :as state]
    [cljs-bean.core]
    ["preact" :as preact]

@@ -1,5 +1,5 @@
 (defproject mattly/precog "0.0.12"
-  :description "A thin wrapper around preact"
+  :description "An opinionated clojurescript wrapper for preact"
   :url "https://github.com/mattly/precog"
   :license {:name "MIT"
             :url  "https://opensource.org/licenses/MIT"}

@@ -33,7 +33,7 @@ If you're interested in collaborating, drop me a line and I'll work on getting s
 
 ## Hiccup Precompilation
 
-Precog has its own (super-basic right now) hiccup interpreter, which is precompiled at the clojurescript compilation stage. There is currently a minimal transformation of property key names from kebab-case to camelCase.
+Precog has its own (super-basic right now) hiccup interpreter, which is precompiled at the clojurescript compilation stage. There is no conversion of props from kebab-case to camelCase.
 
 ## Hooks
 
